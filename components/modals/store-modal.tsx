@@ -6,6 +6,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 import { useStoreModal } from "@/hooks/use-store-modal";
 import Modal from "@/components/ui/modal";
@@ -30,6 +31,8 @@ export const StoreModal = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -46,7 +49,10 @@ export const StoreModal = () => {
         values
       );
 
-      toast.success(`Store ${response.data.name} has been created.`);
+      toast.success(`Store ${response.data.name} has been created.`, {
+        duration: 2000,
+      });
+      router.replace(`/${response.data.id}`);
     } catch (error) {
       toast.error("Something went wrong...");
     } finally {
