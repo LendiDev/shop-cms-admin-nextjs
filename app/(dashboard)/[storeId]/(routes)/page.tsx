@@ -1,20 +1,19 @@
-"use client";
-
 import { useStoreModal } from "@/hooks/use-store-modal";
+import prismadb from "@/lib/prismadb";
 import React, { useEffect } from "react";
 
 const DashboardPage: React.FC<{
   params: {
     storeId: string;
   };
-}> = ({ params }) => {
-  const onClose = useStoreModal((store) => store.onClose);
+}> = async ({ params }) => {
+  const store = await prismadb.store.findFirst({
+    where: {
+      id: params.storeId,
+    },
+  });
 
-  useEffect(() => {
-    onClose();
-  }, [onClose]);
-
-  return <div>{params.storeId}</div>;
+  return <div>Active store is {store?.name}</div>;
 };
 
 export default DashboardPage;

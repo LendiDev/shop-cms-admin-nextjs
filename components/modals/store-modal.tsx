@@ -49,9 +49,13 @@ export const StoreModal = () => {
         values
       );
 
+      // force close modal new store dialog
+      modalStore.onForceClose();
+      // show success toast
       toast.success(`Store ${response.data.name} has been created.`, {
         duration: 2000,
       });
+      // go to newly created store, preventing to go back.
       router.replace(`/${response.data.id}`);
     } catch (error) {
       toast.error("Something went wrong...");
