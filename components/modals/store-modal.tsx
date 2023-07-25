@@ -1,10 +1,48 @@
 "use client";
 
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
 import { useStoreModal } from "@/hooks/use-store-modal";
 import Modal from "@/components/ui/modal";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+const formSchema = z.object({
+  storeName: z.string().min(1, "Store name must be at least 1 character"),
+});
 
 export const StoreModal = () => {
   const modalStore = useStoreModal();
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      storeName: "",
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log(values);
+  };
+
+  const onCancel = () => {
+    form.reset();
+    form.clearErrors();
+    modalStore.onClose();
+  };
 
   return (
     <Modal
@@ -13,7 +51,43 @@ export const StoreModal = () => {
       isOpen={modalStore.isOpen}
       onClose={modalStore.onClose}
     >
-      Future Store Form
+      <div className="pb-4 space-y-4 py-2">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              name="storeName"
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <FormLabel>Store name</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isLoading}
+                        placeholder="shop"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            />
+            <div className="flex justify-end items-center pt-4 space-x-1">
+              <Button
+                disabled={isLoading}
+                variant="outline"
+                onClick={onCancel}
+                type="button"
+              >
+                Cancel
+              </Button>
+              <Button disabled={isLoading} type="submit">
+                Create
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
     </Modal>
   );
 };
