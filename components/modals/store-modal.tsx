@@ -2,8 +2,10 @@
 
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 import { useStoreModal } from "@/hooks/use-store-modal";
 import Modal from "@/components/ui/modal";
@@ -17,9 +19,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import prismadb from "@/lib/prismadb";
 
 const formSchema = z.object({
-  storeName: z.string().min(1, "Store name must be at least 1 character"),
+  name: z.string().min(1, "Store name must be at least 1 character"),
 });
 
 export const StoreModal = () => {
@@ -30,12 +33,25 @@ export const StoreModal = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      storeName: "",
+      name: "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    try {
+      setIsLoading(true);
+
+      const response = await axios.post<typeof prismadb.store.fields>(
+        "/api/stores",
+        values
+      );
+
+      toast.success(`Store ${response.data.name} has been created.`);
+    } catch (error) {
+      toast.error("Something went wrong...");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const onCancel = () => {
@@ -55,7 +71,7 @@ export const StoreModal = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
-              name="storeName"
+              name="name"
               render={({ field }) => {
                 return (
                   <FormItem>
