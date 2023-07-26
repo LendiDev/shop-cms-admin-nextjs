@@ -6,6 +6,7 @@ import { ModalProvider } from "@/providers/modal-provider";
 
 import "./globals.css";
 import { ToasterProvider } from "@/providers/toaster-provider";
+import MobileNavDrawer from "@/components/drawers/mobile-nav-drawer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,6 +24,7 @@ export default async function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={inter.className}>
+          <MobileNavDrawer />
           <ToasterProvider />
           <ModalProvider />
           {children}

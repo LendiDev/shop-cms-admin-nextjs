@@ -75,7 +75,7 @@ export function StoreSwitcher({ className, items = [] }: StoreSwitcherProps) {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild className="mr-3">
         <Button
           variant="outline"
           size="sm"
