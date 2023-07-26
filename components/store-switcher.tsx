@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { Store } from "@prisma/client";
 import {
   Check,
@@ -8,7 +8,7 @@ import {
   PlusSquare,
   Store as StoreIcon,
 } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 import {
@@ -41,6 +41,7 @@ export function StoreSwitcher({ className, items = [] }: StoreSwitcherProps) {
 
   const router = useRouter();
   const params = useParams();
+  const pathname = usePathname();
   const { onOpen } = useStoreModal();
 
   const formattedItems = items.map((item) => ({
@@ -52,9 +53,14 @@ export function StoreSwitcher({ className, items = [] }: StoreSwitcherProps) {
     (item) => item.value === params.storeId
   );
 
+  const getRestPathName = () => {
+    const pathNameArray = pathname.split("/");
+    return pathNameArray.slice(2).join("/");
+  };
+
   const onSelectStore = (store: { value: string; label: string }) => {
     setOpen(false);
-    router.push(`/${store.value}`);
+    router.push(`/${store.value}/${getRestPathName()}`);
 
     // BUG: There is a bug with cache on push to a new page
     // the list of stores is not displaying new stores on selecting previously created

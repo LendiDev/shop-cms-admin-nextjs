@@ -1,5 +1,8 @@
 import prismadb from "@/lib/prismadb";
-import React, { useEffect } from "react";
+import React from "react";
+
+import Heading from "@/components/ui/heading";
+import { Separator } from "@/components/ui/separator";
 
 const DashboardPage: React.FC<{
   params: {
@@ -12,7 +15,12 @@ const DashboardPage: React.FC<{
     },
   });
 
-  return <div>Active store is {store?.name}</div>;
+  return (
+    <div>
+      <Heading title="Overview" subtitle={store?.name} />
+      <Separator className="my-3" />
+    </div>
+  );
 };
 
 export default DashboardPage;
