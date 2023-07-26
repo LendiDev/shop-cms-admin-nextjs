@@ -23,6 +23,7 @@ import Heading from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 import AlertModal from "@/components/modals/alert-modal";
+import { DIALOG_ANIMATION_MS } from "@/components/ui/dialog";
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -36,6 +37,7 @@ type SettingsFormValues = z.infer<typeof formSchema>;
 
 export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
 
   const router = useRouter();
@@ -61,6 +63,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
       router.refresh();
     } catch (error) {
       toast.error("Store is not updated");
+      setIsLoading(false);
     } finally {
       setIsLoading(false);
     }
@@ -68,6 +71,9 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
 
   const onDeleteConfirm = async () => {
     try {
+      setIsLoading(true);
+      setIsDeleting(true);
+
       await axios.delete(`/api/stores/${initialData.id}`);
 
       toast.success("Store has been successfully deleted.");
@@ -76,8 +82,14 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
       router.refresh();
     } catch (error) {
       toast.error("Store is not deleted");
+      setIsLoading(false);
+      setIsDeleting(false);
     } finally {
       setOpenAlert(false);
+      setTimeout(() => {
+        setIsLoading(false);
+        setIsDeleting(false);
+      }, DIALOG_ANIMATION_MS);
     }
   };
 
@@ -125,7 +137,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
               )}
             />
             <Button disabled={isLoading} className="mt-4" type="submit">
-              {!isLoading ? (
+              {!isLoading || isDeleting ? (
                 "Save changes"
               ) : (
                 <>

@@ -6,7 +6,9 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { Store } from "@prisma/client";
+import { Loader2 } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 
 import { useStoreModal } from "@/hooks/use-store-modal";
 import Modal from "@/components/ui/modal";
@@ -20,20 +22,17 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Store } from "@prisma/client";
-import { Loader2 } from "lucide-react";
-
-const TOAST_ANIMATION_MS = 2000;
+import { DIALOG_ANIMATION_MS } from "@/components/ui/dialog";
 
 const formSchema = z.object({
   name: z.string().min(1, "Store name must be at least 1 character"),
 });
 
 export const StoreModal = () => {
-  const modalStore = useStoreModal();
-
   const [isLoading, setIsLoading] = useState(false);
 
+  const modalStore = useStoreModal();
+  const pathname = usePathname();
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -49,15 +48,15 @@ export const StoreModal = () => {
 
       const response = await axios.post<Store>("/api/stores", values);
 
-      // force close modal new store dialog
-      onReset();
-      modalStore.onForceClose();
-      // show success toast
-      toast.success(`Store ${response.data.name} has been created.`, {
-        duration: TOAST_ANIMATION_MS,
-      });
-      // go to newly created store, preventing to go back.
-      router.replace(`/${response.data.id}`);
+      if (pathname === "/") {
+        window.location.assign(`/${response.data.id}`);
+      } else {
+        modalStore.onClose();
+        toast.success(`Store "${response.data.name}" created successfully`);
+        router.replace(`/${response.data.id}`);
+        router.refresh();
+      }
+      resetForm();
     } catch (error) {
       // TODO: custom errors based on error
       toast.error("Something went wrong...");
@@ -65,17 +64,19 @@ export const StoreModal = () => {
     } finally {
       setTimeout(() => {
         setIsLoading(false);
-      }, TOAST_ANIMATION_MS);
+      }, DIALOG_ANIMATION_MS);
     }
   };
 
   const onCancel = () => {
-    onReset();
     modalStore.onClose();
+    resetForm();
   };
 
-  const onReset = () => {
-    form.reset();
+  const resetForm = () => {
+    setTimeout(() => {
+      form.reset();
+    }, DIALOG_ANIMATION_MS);
     form.clearErrors();
   };
 
