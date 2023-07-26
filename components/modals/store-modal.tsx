@@ -21,6 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import prismadb from "@/lib/prismadb";
+import { Store } from "@prisma/client";
 
 const formSchema = z.object({
   name: z.string().min(1, "Store name must be at least 1 character"),
@@ -44,12 +45,10 @@ export const StoreModal = () => {
     try {
       setIsLoading(true);
 
-      const response = await axios.post<typeof prismadb.store.fields>(
-        "/api/stores",
-        values
-      );
+      const response = await axios.post<Store>("/api/stores", values);
 
       // force close modal new store dialog
+      onReset();
       modalStore.onForceClose();
       // show success toast
       toast.success(`Store ${response.data.name} has been created.`, {
@@ -65,9 +64,13 @@ export const StoreModal = () => {
   };
 
   const onCancel = () => {
+    onReset();
+    modalStore.onClose();
+  };
+
+  const onReset = () => {
     form.reset();
     form.clearErrors();
-    modalStore.onClose();
   };
 
   return (

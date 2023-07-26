@@ -1,4 +1,3 @@
-import { useStoreModal } from "@/hooks/use-store-modal";
 import prismadb from "@/lib/prismadb";
 import React, { useEffect } from "react";
 
