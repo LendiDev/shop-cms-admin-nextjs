@@ -20,8 +20,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import prismadb from "@/lib/prismadb";
 import { Store } from "@prisma/client";
+import { Loader2 } from "lucide-react";
+
+const TOAST_ANIMATION_MS = 2000;
 
 const formSchema = z.object({
   name: z.string().min(1, "Store name must be at least 1 character"),
@@ -52,14 +54,18 @@ export const StoreModal = () => {
       modalStore.onForceClose();
       // show success toast
       toast.success(`Store ${response.data.name} has been created.`, {
-        duration: 2000,
+        duration: TOAST_ANIMATION_MS,
       });
       // go to newly created store, preventing to go back.
       router.replace(`/${response.data.id}`);
     } catch (error) {
+      // TODO: custom errors based on error
       toast.error("Something went wrong...");
-    } finally {
       setIsLoading(false);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, TOAST_ANIMATION_MS);
     }
   };
 
@@ -80,7 +86,7 @@ export const StoreModal = () => {
       isOpen={modalStore.isOpen}
       onClose={modalStore.onClose}
     >
-      <div className="pb-4 space-y-4 py-2">
+      <div className="py-1">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
@@ -107,11 +113,21 @@ export const StoreModal = () => {
                 variant="outline"
                 onClick={onCancel}
                 type="button"
+                size="sm"
               >
                 Cancel
               </Button>
-              <Button disabled={isLoading} type="submit">
-                Create
+              <Button
+                disabled={isLoading}
+                type="submit"
+                className="w-20"
+                size="sm"
+              >
+                {!isLoading ? (
+                  "Create"
+                ) : (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                )}
               </Button>
             </div>
           </form>

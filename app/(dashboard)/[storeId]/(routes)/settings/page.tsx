@@ -1,22 +1,36 @@
-"use client";
+import { auth } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 
-import Heading from "@/components/ui/heading";
-import SettingsForm from "./components/settings-form";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { SettingsForm } from "./components/settings-form";
+import prismadb from "@/lib/prismadb";
 
-const SettingsPage = () => {
+interface SettingsPageProps {
+  params: {
+    storeId: string;
+  };
+}
+
+const SettingsPage: React.FC<SettingsPageProps> = async ({ params }) => {
+  const { userId } = auth();
+
+  if (!userId) {
+    redirect("/login");
+  }
+
+  const store = await prismadb.store.findFirst({
+    where: {
+      userId,
+      id: params.storeId,
+    },
+  });
+
+  if (!store) {
+    redirect("/");
+  }
+
   return (
-    <div>
-      <div className="flex justify-between items-center">
-        <Heading title="Settings" subtitle="Manage store preferences" />
-        <Button variant="destructive" size="icon" className="w-8 h-8">
-          <Trash2 className="h-5 w-5" />
-        </Button>
-      </div>
-      <Separator className="my-3" />
-      <SettingsForm />
+    <div className="space-y-3">
+      <SettingsForm initialData={store} />
     </div>
   );
 };

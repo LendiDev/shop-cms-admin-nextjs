@@ -16,10 +16,10 @@ const DashboardPage: React.FC<{
   });
 
   return (
-    <div>
+    <>
       <Heading title="Overview" subtitle={store?.name} />
       <Separator className="my-3" />
-    </div>
+    </>
   );
 };
 
