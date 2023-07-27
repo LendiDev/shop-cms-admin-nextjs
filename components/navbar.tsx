@@ -1,11 +1,9 @@
 import { SignedIn, UserButton, auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import { MenuIcon } from "lucide-react";
 
 import { MainNav } from "@/components/main-nav";
 import { StoreSwitcher } from "@/components/store-switcher";
 import prismadb from "@/lib/prismadb";
-import { Button } from "@/components/ui/button";
 import MobileMenuButton from "./buttons/mobile-menu-button";
 
 const Navbar = async () => {
@@ -32,7 +30,7 @@ const Navbar = async () => {
         <MainNav className="px-2" />
         <div className="ml-auto flex items-center">
           <SignedIn>
-            <UserButton afterSignOutUrl="/" />
+            <UserButton afterSignOutUrl="/signout" />
           </SignedIn>
         </div>
       </div>
