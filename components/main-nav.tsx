@@ -1,17 +1,18 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 
-export const MainNav = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLElement>) => {
-  const pathname = usePathname();
-  const params = useParams();
+interface NavRoute {
+  href: string;
+  label: string;
+  active: boolean;
+}
 
-  const routes = [
+export const getNavRoutes = (params: Params, pathname: string): NavRoute[] => {
+  return [
     {
       href: `/${params.storeId}`,
       label: "Overview",
@@ -23,6 +24,16 @@ export const MainNav = ({
       active: pathname === `/${params.storeId}/settings`,
     },
   ];
+};
+
+export const MainNav = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLElement>) => {
+  const pathname = usePathname();
+  const params = useParams();
+
+  const routes = getNavRoutes(params, pathname);
 
   return (
     <nav className="hidden sm:block">

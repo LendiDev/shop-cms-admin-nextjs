@@ -21,9 +21,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Heading from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import AlertModal from "@/components/modals/alert-modal";
 import { DIALOG_ANIMATION_MS } from "@/components/ui/dialog";
+import { ApiAlert } from "@/components/ui/api-alert";
+import { useWindowOrigin } from "@/hooks/use-window-origin";
+import ApiEndPoints from "./api-endpoints";
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -116,7 +119,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
         </Button>
       </div>
       <Separator />
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-3 gap-6 pb-2">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
@@ -149,6 +152,8 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
           </form>
         </Form>
       </div>
+      <Separator />
+      <ApiEndPoints />
     </>
   );
 };

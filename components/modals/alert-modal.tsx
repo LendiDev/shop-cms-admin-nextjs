@@ -48,7 +48,7 @@ const AlertModal: React.FC<AlertModalProps> = ({
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <div className="flex justify-end space-x-2">
+        <div className="flex justify-center space-x-2 sm:justify-end">
           <Button
             disabled={isLoading}
             onClick={() => onOpenChange(false)}

@@ -1,5 +1,9 @@
 "use client";
 
+import { useParams, usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+
 import {
   Sheet,
   SheetContent,
@@ -8,21 +12,43 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { useMobileNavDrawer } from "@/hooks/use-mobile-nav-drawer";
+import { getNavRoutes } from "@/components/main-nav";
 
 const MobileNavDrawer = () => {
   const { isOpen, onClose } = useMobileNavDrawer();
 
-  //TODO: complete navigation exported from main nav
+  const pathname = usePathname();
+  const params = useParams();
+
+  const routes = getNavRoutes(params, pathname);
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent side="left" className="w-[236px] fill">
         <SheetHeader>
-          <SheetTitle>Are you sure absolutely sure?</SheetTitle>
-          <SheetDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </SheetDescription>
+          <SheetTitle className="text-2xl self-start">Navigation</SheetTitle>
+          <div className="self-start">
+            <ul className={cn("mt-5 flex flex-col items-start space-y-4")}>
+              {routes.map((route) => (
+                <li key={route.href}>
+                  <Link
+                    onClick={() => {
+                      onClose();
+                    }}
+                    href={route.href}
+                    className={cn(
+                      "text-xl font-medium transition-colors hover:text-primary",
+                      route.active
+                        ? "text-black dark:text-white"
+                        : "text-muted-foreground "
+                    )}
+                  >
+                    {route.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </SheetHeader>
       </SheetContent>
     </Sheet>
