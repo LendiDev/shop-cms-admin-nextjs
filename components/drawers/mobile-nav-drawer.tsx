@@ -27,17 +27,17 @@ const MobileNavDrawer = () => {
       <SheetContent side="left" className="w-[236px] fill">
         <SheetHeader>
           <SheetTitle className="text-2xl self-start">Navigation</SheetTitle>
-          <div className="self-start">
+          <div className="self-start w-full">
             <ul className={cn("mt-5 flex flex-col items-start space-y-4")}>
               {routes.map((route) => (
-                <li key={route.href}>
+                <li className="w-full" key={route.href}>
                   <Link
                     onClick={() => {
                       onClose();
                     }}
                     href={route.href}
                     className={cn(
-                      "text-xl font-medium transition-colors hover:text-primary",
+                      "text-xl font-medium h-8 transition-colors hover:text-primary flex items-center",
                       route.active
                         ? "text-black dark:text-white"
                         : "text-muted-foreground "

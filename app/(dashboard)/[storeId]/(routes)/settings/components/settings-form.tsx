@@ -21,11 +21,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Heading from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import AlertModal from "@/components/modals/alert-modal";
 import { DIALOG_ANIMATION_MS } from "@/components/ui/dialog";
-import { ApiAlert } from "@/components/ui/api-alert";
-import { useWindowOrigin } from "@/hooks/use-window-origin";
 import ApiEndPoints from "./api-endpoints";
 
 const formSchema = z.object({
@@ -119,9 +117,12 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
         </Button>
       </div>
       <Separator />
-      <div className="grid grid-cols-3 gap-6 pb-2">
+      <div className="grid gap-6 pb-2 sm:grid-cols-3">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col"
+          >
             <FormField
               name="name"
               control={form.control}
@@ -139,7 +140,11 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
                 </FormItem>
               )}
             />
-            <Button disabled={isLoading} className="mt-4" type="submit">
+            <Button
+              disabled={isLoading}
+              className="mt-4 self-center w-full xs:w-fit xs:self-start"
+              type="submit"
+            >
               {!isLoading || isDeleting ? (
                 "Save changes"
               ) : (

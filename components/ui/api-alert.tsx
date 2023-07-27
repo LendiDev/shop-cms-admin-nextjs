@@ -40,11 +40,9 @@ export const ApiAlert: React.FC<ApiAlertProps> = ({
   return (
     <Alert>
       <Server className="h-4 w-4" />
-      <div className="flex flex-row items-center space-x-2">
-        <AlertTitle>{title}</AlertTitle>
-        <Badge className="mb-1" variant={variantMap[access]}>
-          {textMap[access]}
-        </Badge>
+      <div className="flex flex-col items-start justify-start space-x-0 space-y-2 sm:space-x-2 sm:space-y-0 sm:flex-row sm:items-center">
+        <AlertTitle className="mb-0">{title}</AlertTitle>
+        <Badge variant={variantMap[access]}>{textMap[access]}</Badge>
       </div>
       <Button
         size="icon"
@@ -54,9 +52,9 @@ export const ApiAlert: React.FC<ApiAlertProps> = ({
       >
         <Copy className="h-4 w-4" />
       </Button>
-      <AlertDescription className="mt-1">
-        <div className="inline-block bg-slate-50 px-2 py-1 outline outline-slate-300 outline-1 rounded-sm">
-          <p>{description}</p>
+      <AlertDescription className="mt-2">
+        <div className="flex overflow-x-auto bg-slate-50 px-2 py-1 outline outline-slate-300 outline-1 rounded-sm">
+          {description}
         </div>
       </AlertDescription>
     </Alert>
