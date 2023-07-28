@@ -90,7 +90,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
       setTimeout(() => {
         setIsLoading(false);
         setIsDeleting(false);
-      }, DIALOG_ANIMATION_MS);
+      }, DIALOG_ANIMATION_MS + 100);
     }
   };
 
@@ -101,19 +101,19 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
         isLoading={isLoading}
         setOpen={setOpenAlert}
         onConfirmAction={onDeleteConfirm}
-        actionButtonText="Delete store"
+        actionButtonText="Confirm"
         description={`The store "${initialData.name}" will be deleted permanently. This action cannot be undone.`}
       />
       <div className="flex justify-between items-center">
         <Heading title="Settings" subtitle="Manage store preferences" />
         <Button
           variant="destructive"
-          size="icon"
-          className="w-8 h-8"
+          size="sm"
           disabled={isLoading}
           onClick={() => setOpenAlert(true)}
         >
-          <Trash2 className="h-5 w-5" />
+          <Trash2 className="mr-2 h-5 w-5" />
+          Delete Store
         </Button>
       </div>
       <Separator />

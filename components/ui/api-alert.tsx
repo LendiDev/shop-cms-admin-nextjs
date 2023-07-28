@@ -30,7 +30,13 @@ export const ApiAlert: React.FC<ApiAlertProps> = ({
 }) => {
   const onCopy = () => {
     try {
-      navigator.clipboard.writeText(description);
+      // TODO: find better way to handle clipboard on all devices
+      const element = document.createElement("textarea");
+      element.value = description;
+      document.body.appendChild(element);
+      element.select();
+      document.execCommand("copy");
+      document.body.removeChild(element);
       toast.success("API Endpoint copied to the clipboard");
     } catch (error) {
       toast.error("Something went wrong with copying to the clipboard");
@@ -53,7 +59,7 @@ export const ApiAlert: React.FC<ApiAlertProps> = ({
         <Copy className="h-4 w-4" />
       </Button>
       <AlertDescription className="mt-2">
-        <div className="flex overflow-x-auto bg-slate-50 px-2 py-1 outline outline-slate-300 outline-1 rounded-sm">
+        <div className="flex w-fit font-semibold overflow-x-auto bg-slate-50 px-2 py-1 outline outline-slate-300 outline-1 rounded-sm">
           {description}
         </div>
       </AlertDescription>

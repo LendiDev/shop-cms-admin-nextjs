@@ -9,7 +9,6 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetDescription,
 } from "@/components/ui/sheet";
 import { useMobileNavDrawer } from "@/hooks/use-mobile-nav-drawer";
 import { getNavRoutes } from "@/components/main-nav";
@@ -24,7 +23,7 @@ const MobileNavDrawer = () => {
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent side="left" className="w-[236px] fill">
+      <SheetContent side="right" className="w-[236px] fill">
         <SheetHeader>
           <SheetTitle className="text-2xl self-start">Navigation</SheetTitle>
           <div className="self-start w-full">

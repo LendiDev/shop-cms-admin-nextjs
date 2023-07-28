@@ -33,13 +33,13 @@ const AlertModal: React.FC<AlertModalProps> = ({
 }) => {
   const { isMounted } = useMounted();
 
-  if (!isMounted) {
-    return null;
-  }
-
   const onOpenChange = (open: boolean) => {
     setOpen(open);
   };
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
