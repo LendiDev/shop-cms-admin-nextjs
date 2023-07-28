@@ -16,10 +16,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Billboard } from "@prisma/client";
 import { Button } from "@/components/ui/button";
+import ImageUploader from "@/components/ui/image-uploader";
 
 const formSchema = z.object({
   label: z.string().min(1),
-  imageUrl: z.string().min(1),
+  imageUrl: z.string(),
 });
 
 interface BillboardFormProps {
@@ -61,11 +62,11 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
               <FormItem>
                 <FormLabel>Image Url</FormLabel>
                 <FormControl>
-                  <Input
-                    autoComplete="off"
+                  <ImageUploader
+                    value={field.value ? [field.value] : []}
                     disabled={isLoading}
-                    placeholder="..."
-                    {...field}
+                    onChange={(url) => field.onChange(url)}
+                    onRemove={() => field.onChange("")}
                   />
                 </FormControl>
                 <FormMessage />
@@ -90,29 +91,6 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
               </FormItem>
             )}
           />
-          <CldUploadWidget
-            options={{
-              styles: {
-                "z-index": 333,
-              },
-            }}
-            uploadPreset="<Upload Preset>"
-          >
-            {({ open, widget }) => {
-              const onClick = () => {
-                // fixes widget touchable
-                document.body.style.pointerEvents = "auto";
-
-                open();
-              };
-
-              return (
-                <Button variant="secondary" type="button" onClick={onClick}>
-                  Upload Image
-                </Button>
-              );
-            }}
-          </CldUploadWidget>
           <div className="flex justify-evenly space-x-2 sm:justify-end pt-3 [&>*]:flex-1 [&>*]:sm:flex-none">
             <Button
               disabled={isLoading}

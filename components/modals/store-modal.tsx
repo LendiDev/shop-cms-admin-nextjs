@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { Store } from "@prisma/client";
 import { Loader2 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+import { useClerk } from "@clerk/nextjs";
 
 import { useStoreModal } from "@/hooks/use-store-modal";
 import Modal from "@/components/ui/modal";
@@ -31,9 +32,12 @@ const formSchema = z.object({
 export const StoreModal = () => {
   const [isLoading, setIsLoading] = useState(false);
 
+  const { signOut } = useClerk();
   const modalStore = useStoreModal();
   const pathname = usePathname();
   const router = useRouter();
+
+  const isRoot = pathname === "/";
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,7 +52,7 @@ export const StoreModal = () => {
 
       const response = await axios.post<Store>("/api/stores", values);
 
-      if (pathname === "/") {
+      if (isRoot) {
         window.location.assign(`/${response.data.id}`);
       } else {
         modalStore.onClose();
@@ -56,7 +60,7 @@ export const StoreModal = () => {
         router.replace(`/${response.data.id}`);
         router.refresh();
       }
-      resetForm();
+      resetFormWithDelay();
     } catch (error) {
       // TODO: custom errors based on error
       toast.error("Something went wrong...");
@@ -70,10 +74,21 @@ export const StoreModal = () => {
 
   const onCancel = () => {
     modalStore.onClose();
-    resetForm();
+    resetFormWithDelay();
   };
 
-  const resetForm = () => {
+  const onReset = () => {
+    form.reset();
+    form.clearErrors();
+  };
+
+  const onSignOut = () => {
+    signOut().then(() => {
+      window.location.assign("/");
+    });
+  };
+
+  const resetFormWithDelay = () => {
     setTimeout(() => {
       form.reset();
     }, DIALOG_ANIMATION_MS);
@@ -85,7 +100,7 @@ export const StoreModal = () => {
       title="Create Store"
       description="Add a new store"
       isOpen={modalStore.isOpen}
-      onClose={modalStore.onClose}
+      onClose={isRoot ? () => {} : modalStore.onClose}
     >
       <div className="py-1">
         <Form {...form}>
@@ -109,15 +124,29 @@ export const StoreModal = () => {
                 );
               }}
             />
-            <div className="flex justify-end items-center pt-4 space-x-2">
+            <div className="flex justify-between items-center pt-4 space-x-2">
+              {isRoot && (
+                <Button
+                  disabled={isLoading}
+                  variant="secondary"
+                  className="self-start mr-auto"
+                  onClick={onSignOut}
+                  type="button"
+                  size="sm"
+                >
+                  Log out
+                </Button>
+              )}
+
               <Button
                 disabled={isLoading}
                 variant="outline"
-                onClick={onCancel}
+                className="ml-auto"
+                onClick={isRoot ? onReset : onCancel}
                 type="button"
                 size="sm"
               >
-                Cancel
+                {isRoot ? "Reset" : "Cancel"}
               </Button>
               <Button
                 disabled={isLoading}
