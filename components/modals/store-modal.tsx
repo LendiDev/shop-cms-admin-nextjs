@@ -98,6 +98,7 @@ export const StoreModal = () => {
                     <FormLabel>Store name</FormLabel>
                     <FormControl>
                       <Input
+                        autoComplete="off"
                         disabled={isLoading}
                         placeholder="shop"
                         {...field}
