@@ -3,7 +3,6 @@
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CldUploadButton, CldUploadWidget } from "next-cloudinary";
 
 import {
   Form,
@@ -20,7 +19,9 @@ import ImageUploader from "@/components/ui/image-uploader";
 
 const formSchema = z.object({
   label: z.string().min(1),
-  imageUrl: z.string(),
+  imageUrl: z.string().url({
+    message: "Image is required",
+  }),
 });
 
 interface BillboardFormProps {
@@ -60,7 +61,7 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Image Url</FormLabel>
+                <FormLabel>Background Image</FormLabel>
                 <FormControl>
                   <ImageUploader
                     value={field.value ? [field.value] : []}
@@ -107,7 +108,7 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
               size="sm"
               type="submit"
             >
-              Save Changes
+              Create
             </Button>
           </div>
         </form>

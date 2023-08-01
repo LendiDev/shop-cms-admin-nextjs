@@ -6,13 +6,7 @@ import { StoreSwitcher } from "@/components/store-switcher";
 import prismadb from "@/lib/prismadb";
 import MobileMenuButton from "./buttons/mobile-menu-button";
 
-const Navbar = async () => {
-  const { userId } = auth();
-
-  if (!userId) {
-    redirect("/login");
-  }
-
+const getStores = async (userId: string) => {
   const stores = await prismadb.store.findMany({
     where: {
       userId,
@@ -21,6 +15,17 @@ const Navbar = async () => {
       createdAt: "asc",
     },
   });
+  return stores;
+};
+
+const Navbar = async () => {
+  const { userId } = auth();
+
+  if (!userId) {
+    redirect("/login");
+  }
+
+  const stores = await getStores(userId);
 
   return (
     <div className="border-b">

@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import Link from "next/link";
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 
 interface NavRoute {
   href: string;
@@ -37,6 +37,7 @@ export const MainNav = ({
 }: React.HTMLAttributes<HTMLElement>) => {
   const pathname = usePathname();
   const params = useParams();
+  const router = useRouter();
 
   const routes = getNavRoutes(params, pathname);
 
@@ -44,9 +45,10 @@ export const MainNav = ({
     <nav className="hidden sm:block">
       <ul className={cn("flex items-center space-x-4", className)}>
         {routes.map((route) => (
-          <li key={route.href}>
+          <li key={route.href} onClick={() => router.refresh()}>
             <Link
               href={route.href}
+              prefetch={false}
               className={cn(
                 "text-m font-medium transition-colors hover:text-primary",
                 route.active

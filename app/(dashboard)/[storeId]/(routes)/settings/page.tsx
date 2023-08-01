@@ -10,6 +10,16 @@ interface SettingsPageProps {
   };
 }
 
+const getStore = async (id: string, userId: string) => {
+  const store = await prismadb.store.findFirst({
+    where: {
+      userId,
+      id,
+    },
+  });
+  return store;
+};
+
 const SettingsPage: React.FC<SettingsPageProps> = async ({ params }) => {
   const { userId } = auth();
 
@@ -17,12 +27,7 @@ const SettingsPage: React.FC<SettingsPageProps> = async ({ params }) => {
     redirect("/login");
   }
 
-  const store = await prismadb.store.findFirst({
-    where: {
-      userId,
-      id: params.storeId,
-    },
-  });
+  const store = await getStore(params.storeId, userId);
 
   if (!store) {
     redirect("/");

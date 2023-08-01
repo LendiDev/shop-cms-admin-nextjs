@@ -3,6 +3,7 @@
 import { useParams, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import {
   Sheet,
@@ -18,6 +19,7 @@ const MobileNavDrawer = () => {
 
   const pathname = usePathname();
   const params = useParams();
+  const router = useRouter();
 
   const routes = getNavRoutes(params, pathname);
 
@@ -29,7 +31,11 @@ const MobileNavDrawer = () => {
           <div className="self-start w-full">
             <ul className={cn("mt-5 flex flex-col items-start space-y-4")}>
               {routes.map((route) => (
-                <li className="w-full" key={route.href}>
+                <li
+                  className="w-full"
+                  key={route.href}
+                  onClick={() => router.refresh()}
+                >
                   <Link
                     onClick={() => {
                       onClose();
