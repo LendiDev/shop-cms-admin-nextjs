@@ -3,6 +3,10 @@
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useParams } from "next/navigation";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 import {
   Form,
@@ -45,8 +49,19 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
     },
   });
 
-  const onSubmit = async (values: BillboardFormValues) => {
-    console.log("on submit pressed", values);
+  const params = useParams();
+  const router = useRouter();
+
+  const onSubmit = async (data: BillboardFormValues) => {
+    try {
+      console.log("on submit pressed", data);
+      await axios.post(`/api/stores/${params.storeId}/billboards`, data);
+      router.refresh();
+      toast.success("New billboard created.");
+    } catch (error) {
+      console.log("error posting new billboard", error);
+      toast.error(`Billboard wasn't created.`);
+    }
   };
 
   return (

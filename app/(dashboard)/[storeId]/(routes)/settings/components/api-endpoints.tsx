@@ -13,7 +13,7 @@ const ApiEndPoints = () => {
   const baseUrl = `${origin}/api/${params.storeId}`;
 
   if (!origin) {
-    return null;
+    return false;
   }
 
   return (

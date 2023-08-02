@@ -5,7 +5,7 @@ import BillboardsGallery from "./components/billboards-gallery";
 import prismadb from "@/lib/prismadb";
 
 interface BillboardsPageProps {
-  params: { storeId: string };
+  params: { storeId: string; billboardId: string };
 }
 
 const BillboardsPage: React.FC<BillboardsPageProps> = async ({ params }) => {
