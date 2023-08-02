@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { useEffect, useState } from "react";
 
 import {
   Form,
@@ -17,9 +18,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Billboard } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import ImageUploader from "@/components/ui/image-uploader";
+import { Billboard } from "@prisma/client";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Loader2 } from "lucide-react";
+import { DIALOG_ANIMATION_MS } from "@/components/ui/dialog";
 
 const formSchema = z.object({
   label: z.string().min(1),
@@ -29,21 +33,24 @@ const formSchema = z.object({
 });
 
 interface BillboardFormProps {
-  initialData?: Billboard;
-  isLoading: boolean;
+  isNew: boolean;
   onCloseModal: () => void;
 }
 
 type BillboardFormValues = z.infer<typeof formSchema>;
 
 const BillboardForm: React.FC<BillboardFormProps> = ({
-  initialData,
-  isLoading,
+  isNew,
   onCloseModal,
 }) => {
+  const actionButtonText = isNew ? "Create" : "Update";
+
+  const [initialLoading, setInitialLoading] = useState(!isNew);
+  const [loading, setLoading] = useState(false);
+
   const form = useForm<BillboardFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
+    defaultValues: {
       label: "",
       imageUrl: "",
     },
@@ -52,15 +59,39 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
   const params = useParams();
   const router = useRouter();
 
+  useEffect(() => {
+    if (!isNew) {
+      setInitialLoading(true);
+
+      axios
+        .get(`/api/stores/${params.storeId}/billboards/${params.billboardId}`)
+        .then(({ data }: { data: { billboard: Billboard } }) => {
+          form.setValue("label", data.billboard.label);
+          form.setValue("imageUrl", data.billboard.imageUrl);
+          setInitialLoading(false);
+        })
+        .catch(() => {
+          toast.error("Billboard not found");
+          onCloseModal();
+        });
+    }
+  }, [form, isNew, onCloseModal, params.billboardId, params.storeId]);
+
   const onSubmit = async (data: BillboardFormValues) => {
     try {
-      console.log("on submit pressed", data);
+      setLoading(true);
+
       await axios.post(`/api/stores/${params.storeId}/billboards`, data);
+
       router.refresh();
+      onCloseModal();
       toast.success("New billboard created.");
     } catch (error) {
-      console.log("error posting new billboard", error);
       toast.error(`Billboard wasn't created.`);
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, DIALOG_ANIMATION_MS);
     }
   };
 
@@ -71,45 +102,49 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col space-y-2"
         >
-          <FormField
-            name="imageUrl"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Background Image</FormLabel>
-                <FormControl>
-                  <ImageUploader
-                    value={field.value ? [field.value] : []}
-                    disabled={isLoading}
-                    onChange={(url) => field.onChange(url)}
-                    onRemove={() => field.onChange("")}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="label"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Billboard Label</FormLabel>
-                <FormControl>
-                  <Input
-                    autoComplete="off"
-                    disabled={isLoading}
-                    placeholder="Enter billboard label..."
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {initialLoading ? (
+            <Skeleton className="w-full h-[324px]" />
+          ) : (
+            <>
+              <FormField
+                name="imageUrl"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Background Image</FormLabel>
+                    <FormControl>
+                      <ImageUploader
+                        value={field.value ? [field.value] : []}
+                        onChange={(url) => field.onChange(url)}
+                        onRemove={() => field.onChange("")}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="label"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Billboard Label</FormLabel>
+                    <FormControl>
+                      <Input
+                        autoComplete="off"
+                        placeholder="Enter billboard label..."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </>
+          )}
+
           <div className="flex justify-evenly space-x-2 sm:justify-end pt-3 [&>*]:flex-1 [&>*]:sm:flex-none">
             <Button
-              disabled={isLoading}
               onClick={onCloseModal}
               variant="outline"
               type="button"
@@ -118,12 +153,16 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
               Cancel
             </Button>
             <Button
-              disabled={isLoading}
               variant="default"
               size="sm"
               type="submit"
+              disabled={initialLoading || loading}
             >
-              Create
+              {loading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                actionButtonText
+              )}
             </Button>
           </div>
         </form>

@@ -38,8 +38,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     <div>
       <div className="flex items-center gap-4">
         {value.map((url) => (
-          <div key={url} className="relative rounded-md overflow-hidden mb-3">
-            <div className="z-10 absolute top-2 right-2">
+          <div
+            key={url}
+            className="relative h-40 w-full rounded-md overflow-hidden mb-3"
+          >
+            <div className="z-10 absolute top-2 right-2 ">
               <Button
                 type="button"
                 onClick={() => onRemove(url)}
@@ -49,13 +52,15 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                 <Trash className="h-4 w-4" />
               </Button>
             </div>
-            <CldImage
-              width="280"
-              height="200"
-              style={{ objectFit: "fill", objectPosition: "center" }}
-              src={url}
-              alt="Billboard image"
-            />
+            <div className="absolute w-full h-full  aspect-h-1 bg-gray-200 rounded-lg ">
+              <Image
+                layout="fill"
+                objectFit="cover"
+                src={url}
+                alt={"Billboard image preview"}
+                quality={25}
+              />
+            </div>
           </div>
         ))}
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { PlusSquareIcon } from "lucide-react";
+import { EditIcon, PlusSquareIcon, Trash2 } from "lucide-react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -9,6 +9,7 @@ import Heading from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Billboard } from "@prisma/client";
 import BillboardModal from "./modals/billboard-modal";
+import Image from "next/image";
 
 interface BillboardsGalleryProps {
   billboards: Billboard[];
@@ -17,29 +18,22 @@ interface BillboardsGalleryProps {
 const BillboardsGallery: React.FC<BillboardsGalleryProps> = ({
   billboards = [],
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const params = useParams();
-  const pathname = usePathname();
 
   const onAddNew = () => {
-    router.push(`/${params.storeId}/billboards/new`);
+    router.push(`/${params.storeId}/billboards/new`, { scroll: false });
   };
 
-  useEffect(() => {
-    if (pathname.includes("/billboards/new")) {
-      setIsModalOpen(true);
-    }
-  }, [pathname]);
-
-  const setOpen = () => {
-    setIsModalOpen(false);
-    router.replace(`/${params.storeId}/billboards`);
+  const onEdit = (billboardId: string) => {
+    router.push(`/${params.storeId}/billboards/${billboardId}`, {
+      scroll: false,
+    });
   };
 
   return (
     <>
-      <BillboardModal isOpen={isModalOpen} setOpen={setOpen} />
+      <BillboardModal />
       <div className="space-y-3">
         <div className="flex flex-row items-center justify-between">
           <Heading title="Billboards" subtitle="Manage your billboards" />
@@ -58,7 +52,47 @@ const BillboardsGallery: React.FC<BillboardsGalleryProps> = ({
             </Button>
           </div>
         ) : (
-          <div>Show them</div>
+          <div className="grid grid-cols-1 gap-y-3 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-2">
+            {billboards.map((billboard) => {
+              return (
+                <div
+                  key={billboard.id}
+                  className="group/container block relative w-full h-40 aspect-h-1 bg-gray-200 rounded-lg overflow-hidden"
+                >
+                  <Image
+                    layout="fill"
+                    objectFit="cover"
+                    src={billboard.imageUrl}
+                    alt={"Billboard image preview"}
+                    quality={25}
+                  />
+                  <div className="flex gap-2 absolute top-2 right-2 group-hover/container:visible sm:invisible">
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      className="h-8"
+                      onClick={() => onEdit(billboard.id)}
+                    >
+                      <EditIcon className="mr-2 w-4 h-4" />
+                      Edit
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="destructive"
+                      className="w-8 h-8"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <div className="flex absolute bottom-0 left-0 bg-white py-1 px-2 bg-opacity-90 w-full">
+                    <p className="text-ellipsis line-clamp-1">
+                      {billboard.label}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
     </>

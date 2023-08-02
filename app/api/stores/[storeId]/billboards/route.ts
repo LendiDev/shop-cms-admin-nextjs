@@ -4,6 +4,35 @@ import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
+export async function GET(
+  _req: Request,
+  { params }: { params: { storeId: string } }
+) {
+  try {
+    if (!params.storeId) {
+      return NextResponse.json(
+        { message: "Store id is required" },
+        { status: 400 }
+      );
+    }
+
+    const billboards = await prismadb.billboard.findMany({
+      where: {
+        storeId: params.storeId,
+      },
+    });
+
+    return NextResponse.json({ billboards });
+  } catch (error) {
+    console.log("[BILLBOARDS_GET]", error);
+
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
 interface BillboardCreateDTO {
   imageUrl: string;
   label: string;
