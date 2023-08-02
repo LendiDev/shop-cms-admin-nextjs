@@ -33,8 +33,8 @@ const AlertModal: React.FC<AlertModalProps> = ({
 }) => {
   const { isMounted } = useMounted();
 
-  const onOpenChange = (open: boolean) => {
-    setOpen(open);
+  const onOpenChange = () => {
+    setOpen(false);
   };
 
   if (!isMounted) {
@@ -51,7 +51,7 @@ const AlertModal: React.FC<AlertModalProps> = ({
         <div className="flex justify-evenly [&>*]:flex-1 space-x-2 sm:justify-end mt-4 [&>*]:sm:flex-none ">
           <Button
             disabled={isLoading}
-            onClick={() => onOpenChange(false)}
+            onClick={onOpenChange}
             variant="outline"
             size="sm"
           >

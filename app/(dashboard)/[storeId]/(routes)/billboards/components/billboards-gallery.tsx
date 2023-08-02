@@ -1,8 +1,10 @@
 "use client";
 
 import { EditIcon, PlusSquareIcon, Trash2 } from "lucide-react";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import Heading from "@/components/ui/heading";
@@ -10,6 +12,9 @@ import { Separator } from "@/components/ui/separator";
 import { Billboard } from "@prisma/client";
 import BillboardModal from "./modals/billboard-modal";
 import Image from "next/image";
+import AlertModal from "@/components/modals/alert-modal";
+
+import { DIALOG_ANIMATION_MS } from "@/components/ui/dialog";
 
 interface BillboardsGalleryProps {
   billboards: Billboard[];
@@ -18,6 +23,10 @@ interface BillboardsGalleryProps {
 const BillboardsGallery: React.FC<BillboardsGalleryProps> = ({
   billboards = [],
 }) => {
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [billboardToDelete, setBillboardToDelete] = useState<Billboard>();
+
   const router = useRouter();
   const params = useParams();
 
@@ -31,9 +40,48 @@ const BillboardsGallery: React.FC<BillboardsGalleryProps> = ({
     });
   };
 
+  const onRemove = (billboard: Billboard) => {
+    setAlertOpen(true);
+    setBillboardToDelete(billboard);
+  };
+
+  const onRemoveHandler = async () => {
+    if (!billboardToDelete?.id) {
+      toast.error("Something went wrong...");
+      setAlertOpen(false);
+    }
+
+    try {
+      setLoading(true);
+
+      await axios.delete(
+        `/api/stores/${params.storeId}/billboards/${billboardToDelete?.id}`
+      );
+
+      toast.success("Billboard has been successfully deleted.");
+      router.refresh();
+      setAlertOpen(false);
+    } catch (error) {
+      toast.error("Billboard is not deleted");
+      setLoading(false);
+    } finally {
+      setAlertOpen(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, DIALOG_ANIMATION_MS + 100);
+    }
+  };
+
   return (
     <>
       <BillboardModal />
+      <AlertModal
+        isOpen={alertOpen}
+        setOpen={setAlertOpen}
+        isLoading={loading}
+        onConfirmAction={onRemoveHandler}
+        actionButtonText="Delete"
+      />
       <div className="space-y-3">
         <div className="flex flex-row items-center justify-between">
           <Heading title="Billboards" subtitle="Manage your billboards" />
@@ -80,6 +128,7 @@ const BillboardsGallery: React.FC<BillboardsGalleryProps> = ({
                       size="icon"
                       variant="destructive"
                       className="w-8 h-8"
+                      onClick={() => onRemove(billboard)}
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>

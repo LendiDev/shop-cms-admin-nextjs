@@ -44,6 +44,7 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
   onCloseModal,
 }) => {
   const actionButtonText = isNew ? "Create" : "Update";
+  const action = isNew ? "created" : "updated";
 
   const [initialLoading, setInitialLoading] = useState(!isNew);
   const [loading, setLoading] = useState(false);
@@ -81,13 +82,20 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
     try {
       setLoading(true);
 
-      await axios.post(`/api/stores/${params.storeId}/billboards`, data);
+      if (isNew) {
+        await axios.post(`/api/stores/${params.storeId}/billboards`, data);
+      } else {
+        await axios.patch(
+          `/api/stores/${params.storeId}/billboards/${params.billboardId}`,
+          data
+        );
+      }
 
       router.refresh();
       onCloseModal();
-      toast.success("New billboard created.");
+      toast.success(`Billboard ${action}.`);
     } catch (error) {
-      toast.error(`Billboard wasn't created.`);
+      toast.error(`Billboard wasn't ${action}`);
     } finally {
       setTimeout(() => {
         setLoading(false);
