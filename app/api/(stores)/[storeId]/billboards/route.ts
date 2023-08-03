@@ -36,6 +36,7 @@ export async function GET(
 interface BillboardCreateDTO {
   imageUrl: string;
   label: string;
+  labelColor: string;
 }
 
 export async function POST(
@@ -87,6 +88,7 @@ export async function POST(
       data: {
         storeId,
         label: body.label,
+        labelColor: body.labelColor,
         imageUrl: body.imageUrl,
       },
     });

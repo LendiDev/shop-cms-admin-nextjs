@@ -46,7 +46,11 @@ export async function PATCH(
 ) {
   try {
     const { userId } = auth();
-    const storeData: { imageUrl?: string; label?: string } = await req.json();
+    const storeData: {
+      imageUrl?: string;
+      label?: string;
+      labelColor?: string;
+    } = await req.json();
 
     if (!userId) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -88,6 +92,7 @@ export async function PATCH(
       data: {
         imageUrl: storeData.imageUrl,
         label: storeData.label,
+        labelColor: storeData.labelColor,
       },
     });
 

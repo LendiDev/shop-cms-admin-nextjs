@@ -30,6 +30,7 @@ const formSchema = z.object({
   imageUrl: z.string().url({
     message: "Image is required",
   }),
+  labelColor: z.string().optional(),
 });
 
 interface BillboardFormProps {
@@ -54,6 +55,7 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
     defaultValues: {
       label: "",
       imageUrl: "",
+      labelColor: "#000",
     },
   });
 
@@ -65,10 +67,14 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
       setInitialLoading(true);
 
       axios
-        .get(`/api/stores/${params.storeId}/billboards/${params.billboardId}`)
+        .get(`/api/${params.storeId}/billboards/${params.billboardId}`)
         .then(({ data }: { data: { billboard: Billboard } }) => {
-          form.setValue("label", data.billboard.label);
-          form.setValue("imageUrl", data.billboard.imageUrl);
+          const { billboard } = data;
+
+          form.setValue("label", billboard.label);
+          form.setValue("labelColor", billboard.labelColor || "#000");
+          form.setValue("imageUrl", billboard.imageUrl);
+
           setInitialLoading(false);
         })
         .catch(() => {
@@ -83,10 +89,10 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
       setLoading(true);
 
       if (isNew) {
-        await axios.post(`/api/stores/${params.storeId}/billboards`, data);
+        await axios.post(`/api/${params.storeId}/billboards`, data);
       } else {
         await axios.patch(
-          `/api/stores/${params.storeId}/billboards/${params.billboardId}`,
+          `/api/${params.storeId}/billboards/${params.billboardId}`,
           data
         );
       }
@@ -125,6 +131,8 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
                         value={field.value ? [field.value] : []}
                         onChange={(url) => field.onChange(url)}
                         onRemove={() => field.onChange("")}
+                        labelPreview={form.watch("label")}
+                        labelPreviewColor={form.watch("labelColor")}
                       />
                     </FormControl>
                     <FormMessage />
@@ -141,6 +149,23 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
                       <Input
                         autoComplete="off"
                         placeholder="Enter billboard label..."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="labelColor"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Label colour</FormLabel>
+                    <FormControl>
+                      <Input
+                        autoComplete="off"
+                        placeholder="Label color"
                         {...field}
                       />
                     </FormControl>

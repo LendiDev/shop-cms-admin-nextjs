@@ -27,6 +27,7 @@ model Billboard {
   store     Store    @relation("StoreToBillboard", fields: [storeId], references: [id])
   storeId   String
   label     String
+  labelColor String  @default("#000")
   imageUrl  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

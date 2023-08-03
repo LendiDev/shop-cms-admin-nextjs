@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import { memo } from "react";
 
 import { ApiAlert } from "@/components/ui/api-alert";
 import Heading from "@/components/ui/heading";
@@ -20,7 +21,7 @@ const ApiEndPoints = () => {
     <>
       <Heading title="API Endpoints" className="pt-2" />
       <ApiAlert
-        title="Public API URL"
+        title="BASE API URL"
         description={`${baseUrl}`}
         access="public"
       />
@@ -28,4 +29,4 @@ const ApiEndPoints = () => {
   );
 };
 
-export default ApiEndPoints;
+export default memo(ApiEndPoints);

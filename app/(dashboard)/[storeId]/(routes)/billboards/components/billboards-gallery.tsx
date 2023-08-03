@@ -23,6 +23,8 @@ interface BillboardsGalleryProps {
 const BillboardsGallery: React.FC<BillboardsGalleryProps> = ({
   billboards = [],
 }) => {
+  const billboardsCount = billboards.length > 0 ? `(${billboards.length})` : "";
+
   const [alertOpen, setAlertOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [billboardToDelete, setBillboardToDelete] = useState<Billboard>();
@@ -74,7 +76,6 @@ const BillboardsGallery: React.FC<BillboardsGalleryProps> = ({
 
   return (
     <>
-      <BillboardModal />
       <AlertModal
         isOpen={alertOpen}
         setOpen={setAlertOpen}
@@ -84,7 +85,10 @@ const BillboardsGallery: React.FC<BillboardsGalleryProps> = ({
       />
       <div className="space-y-3">
         <div className="flex flex-row items-center justify-between">
-          <Heading title="Billboards" subtitle="Manage your billboards" />
+          <Heading
+            title={`Billboards ${billboardsCount}`}
+            subtitle="Manage your billboards"
+          />
           <Button size="sm" onClick={onAddNew}>
             <PlusSquareIcon className="mr-2 h-4 w-4" />
             Add New
@@ -108,8 +112,10 @@ const BillboardsGallery: React.FC<BillboardsGalleryProps> = ({
                   className="group/container block relative w-full h-40 aspect-h-1 bg-gray-200 rounded-lg overflow-hidden"
                 >
                   <Image
-                    layout="fill"
-                    objectFit="cover"
+                    priority={true}
+                    className="object-cover"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     src={billboard.imageUrl}
                     alt={"Billboard image preview"}
                     quality={25}
@@ -133,8 +139,11 @@ const BillboardsGallery: React.FC<BillboardsGalleryProps> = ({
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
-                  <div className="flex absolute bottom-0 left-0 bg-white py-1 px-2 bg-opacity-90 w-full">
-                    <p className="text-ellipsis line-clamp-1">
+                  <div className="flex justify-center items-center absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-full px-10">
+                    <p
+                      className="text-center select-none"
+                      style={{ color: billboard.labelColor || "#000" }}
+                    >
                       {billboard.label}
                     </p>
                   </div>

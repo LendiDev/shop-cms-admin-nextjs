@@ -1,24 +1,29 @@
 "use client";
 
-import { CldImage, CldUploadWidget } from "next-cloudinary";
+import { CldUploadWidget } from "next-cloudinary";
 import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { ImagePlus, Trash } from "lucide-react";
 
 interface ImageUploaderProps {
-  disabled?: boolean;
   onChange: (value: string) => void;
   onRemove: (value: string) => void;
   value: string[];
+  disabled?: boolean;
+  labelPreview?: string;
+  labelPreviewColor?: string;
 }
 
 const ImageUploader: React.FC<ImageUploaderProps> = ({
-  disabled,
   onChange,
   onRemove,
   value,
+  disabled,
+  labelPreview,
+  labelPreviewColor,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -54,12 +59,22 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             </div>
             <div className="absolute w-full h-full  aspect-h-1 bg-gray-200 rounded-lg ">
               <Image
-                layout="fill"
-                objectFit="cover"
+                priority={true}
+                className="object-cover"
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 src={url}
                 alt={"Billboard image preview"}
                 quality={25}
               />
+              <div className="flex justify-center items-center absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-full px-10">
+                <p
+                  className={cn("text-center select-none")}
+                  style={{ color: labelPreviewColor && labelPreviewColor }}
+                >
+                  {labelPreview}
+                </p>
+              </div>
             </div>
           </div>
         ))}
