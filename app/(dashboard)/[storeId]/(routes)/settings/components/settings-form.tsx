@@ -56,7 +56,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
     try {
       setIsLoading(true);
 
-      await axios.patch(`/api/stores/${initialData.id}`, {
+      await axios.patch(`/api/${initialData.id}`, {
         name: values.name,
       });
 
@@ -75,7 +75,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
       setIsLoading(true);
       setIsDeleting(true);
 
-      await axios.delete(`/api/stores/${initialData.id}`);
+      await axios.delete(`/api/${initialData.id}`);
 
       toast.success("Store has been successfully deleted.");
 
