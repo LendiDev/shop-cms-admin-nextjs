@@ -1,7 +1,8 @@
 "use client";
 
-import { useMounted } from "@/hooks/use-mounted";
 import { useCallback, useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import { useParams, usePathname, useRouter } from "next/navigation";
 
 import {
   Dialog,
@@ -11,12 +12,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import BillboardForm from "../billboard-form";
-import { useParams, usePathname, useRouter } from "next/navigation";
 
 interface BillboardModalProps {}
 
 const BillboardModal: React.FC<BillboardModalProps> = () => {
-  const { isMounted } = useMounted();
   const [isOpen, setIsOpen] = useState(false);
   const [isNew, setIsNew] = useState(false);
 
@@ -44,10 +43,6 @@ const BillboardModal: React.FC<BillboardModalProps> = () => {
     router.replace(`/${params.storeId}/billboards`, { scroll: false });
   }, [params.storeId, router]);
 
-  if (!isMounted) {
-    return false;
-  }
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
@@ -61,4 +56,4 @@ const BillboardModal: React.FC<BillboardModalProps> = () => {
   );
 };
 
-export default BillboardModal;
+export default dynamic(() => Promise.resolve(BillboardModal), { ssr: false });

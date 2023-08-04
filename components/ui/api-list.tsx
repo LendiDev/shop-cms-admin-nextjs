@@ -7,6 +7,7 @@ import Heading from "./heading";
 import { Separator } from "./separator";
 import { useParams } from "next/navigation";
 import { useWindowOrigin } from "@/hooks/use-window-origin";
+import dynamic from "next/dynamic";
 
 interface ApiListProps {
   entityName: string;
@@ -19,12 +20,8 @@ const ApiList: React.FC<ApiListProps> = ({ entityName, entityIdName }) => {
 
   const baseUrl = `${origin}/api/${params.storeId}`;
 
-  if (!origin) {
-    return false;
-  }
-
   return (
-    <section className="space-y-3 mt-6">
+    <div className="space-y-3 mt-6">
       <Heading title="API Endpoints" className="pt-2" />
       <Separator />
       <ApiAlert
@@ -52,8 +49,8 @@ const ApiList: React.FC<ApiListProps> = ({ entityName, entityIdName }) => {
         description={`${baseUrl}/${entityName}/{${entityIdName}}`}
         access="admin"
       />
-    </section>
+    </div>
   );
 };
 
-export default ApiList;
+export default dynamic(() => Promise.resolve(ApiList), { ssr: false });

@@ -4,9 +4,10 @@ import { format } from "date-fns";
 
 import prismadb from "@/lib/prismadb";
 import ApiList from "@/components/ui/api-list";
+import BusProvider from "@/components/providers/bus-provider";
 import BillboardModal from "./components/modals/category-modal";
-import CategoriesTable from "./components/categories-table";
-import { CategoryColumns } from "./components/table/columns";
+import { CategoryColumn } from "./components/table/columns";
+import CategoriesClient from "./components/categories-client";
 
 interface CategoriesPageProps {
   params: { storeId: string; categoryId: string };
@@ -38,12 +39,13 @@ const CategoriesPage: React.FC<CategoriesPageProps> = async ({ params }) => {
     },
   });
 
-  const formattedCategories: CategoryColumns[] = categories.map(
-    ({ name, createdAt, billboard: { label } }) => {
+  const formattedCategories: CategoryColumn[] = categories.map(
+    ({ id, name, createdAt, billboard: { label } }) => {
       return {
+        id,
         name,
         billboard: label,
-        createdAt: format(createdAt, "dd/MM/yy h:mmbbb"),
+        createdAt: format(createdAt, "dd/MM/yy h:mmaaa"),
       };
     }
   );
@@ -51,10 +53,12 @@ const CategoriesPage: React.FC<CategoriesPageProps> = async ({ params }) => {
   return (
     <>
       <BillboardModal />
-      <CategoriesTable
-        categories={categories}
-        tableData={formattedCategories}
-      />
+      <BusProvider>
+        <CategoriesClient
+          categories={categories}
+          tableData={formattedCategories}
+        />
+      </BusProvider>
       <ApiList entityName="categories" entityIdName="categoryId" />
     </>
   );

@@ -32,7 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DIALOG_ANIMATION_MS } from "@/components/ui/dialog";
-import { fetchBillboards } from "@/lib/api";
+import { fetchBillboards, fetchCategory } from "@/lib/api";
 
 interface CategoryParams extends Params {
   storeId: string;
@@ -75,29 +75,43 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ isNew, onCloseModal }) => {
     setInitialLoading(true);
 
     if (!isNew) {
-      axios
-        .get(`/api/${params.storeId}/categories/${params.categoryId}`)
-        .then(({ data }: { data: { category: Category } }) => {
-          const { category } = data;
+      const fetchData = async () => {
+        return Promise.all([
+          await fetchCategory(params.storeId, params.categoryId),
+          await fetchBillboards(params.storeId as string),
+        ]);
+      };
 
-          form.setValue("name", category.name);
+      fetchData()
+        .then(([category, billboards]) => {
+          if (isSubscribed) {
+            form.setValue("name", category.name);
+            form.setValue("billboardId", category.billboardId);
+            setBillboards(billboards);
+          }
         })
         .catch(() => {
-          toast.error("Category not found");
+          toast.error("Something went wrong");
           onCloseModal();
+        })
+        .finally(() => {
+          setInitialLoading(false);
+        });
+    } else {
+      fetchBillboards(params.storeId as string)
+        .then((billboards) => {
+          if (isSubscribed) {
+            setBillboards(billboards);
+          }
+        })
+        .catch(() => {
+          toast.error("Something went wrong");
+          onCloseModal();
+        })
+        .finally(() => {
+          setInitialLoading(false);
         });
     }
-
-    fetchBillboards(params.storeId as string)
-      .then((billboards) => {
-        if (isSubscribed) {
-          setBillboards(billboards);
-        }
-      })
-      .catch(console.warn)
-      .finally(() => {
-        setInitialLoading(false);
-      });
 
     return () => {
       isSubscribed = false;

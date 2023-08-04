@@ -1,7 +1,8 @@
 "use client";
 
-import { useMounted } from "@/hooks/use-mounted";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 
 import {
   Dialog,
@@ -11,12 +12,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import BillboardForm from "../category-form";
-import { useParams, usePathname, useRouter } from "next/navigation";
 
 interface BillboardModalProps {}
 
-const BillboardModal: React.FC<BillboardModalProps> = () => {
-  const { isMounted } = useMounted();
+const CategoryModal: React.FC<BillboardModalProps> = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isNew, setIsNew] = useState(false);
 
@@ -34,19 +33,15 @@ const BillboardModal: React.FC<BillboardModalProps> = () => {
       setIsOpen(true);
       setIsNew(true);
     }
-    if (pathname.includes(`/categories/${params.billboardId}`)) {
+    if (pathname.includes(`/categories/${params.categoryId}`)) {
       setIsOpen(true);
     }
-  }, [params.billboardId, pathname]);
+  }, [params.categoryId, pathname]);
 
   const onClose = useCallback(() => {
     setIsOpen(false);
     router.replace(`/${params.storeId}/categories`, { scroll: false });
   }, [params.storeId, router]);
-
-  if (!isMounted) {
-    return false;
-  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -61,4 +56,4 @@ const BillboardModal: React.FC<BillboardModalProps> = () => {
   );
 };
 
-export default BillboardModal;
+export default dynamic(() => Promise.resolve(CategoryModal), { ssr: false });

@@ -5,6 +5,7 @@ import { MainNav } from "@/components/main-nav";
 import { StoreSwitcher } from "@/components/store-switcher";
 import prismadb from "@/lib/prismadb";
 import MobileMenuButton from "./buttons/mobile-menu-button";
+import ProfileNavButton from "./buttons/profile-nav-button";
 
 const getStores = async (userId: string) => {
   const stores = await prismadb.store.findMany({
@@ -33,11 +34,7 @@ const Navbar = async () => {
         <MobileMenuButton />
         <StoreSwitcher items={stores} />
         <MainNav className="px-2" />
-        <div className="ml-auto flex items-center">
-          <SignedIn>
-            <UserButton afterSignOutUrl="/signout" />
-          </SignedIn>
-        </div>
+        <ProfileNavButton />
       </div>
     </div>
   );

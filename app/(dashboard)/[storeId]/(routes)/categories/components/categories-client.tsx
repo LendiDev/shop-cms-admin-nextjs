@@ -5,23 +5,23 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useListener } from "react-bus";
 
 import { Button } from "@/components/ui/button";
 import Heading from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Category } from "@prisma/client";
 import AlertModal from "@/components/modals/alert-modal";
-
 import { DIALOG_ANIMATION_MS } from "@/components/ui/dialog";
 import { DataTable } from "@/components/ui/data-table";
-import { CategoryColumns, columns } from "./table/columns";
+import { CategoryColumn, columns } from "./table/columns";
 
-interface CategoriesTableProps {
+interface CategoriesClientProps {
   categories: Category[];
-  tableData: CategoryColumns[];
+  tableData: CategoryColumn[];
 }
 
-const CategoriesTable: React.FC<CategoriesTableProps> = ({
+const CategoriesClient: React.FC<CategoriesClientProps> = ({
   categories = [],
   tableData = [],
 }) => {
@@ -29,7 +29,7 @@ const CategoriesTable: React.FC<CategoriesTableProps> = ({
 
   const [alertOpen, setAlertOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [categoryToDelete, setCategoryToDelete] = useState<Category>();
+  const [categoryToDelete, setCategoryToDelete] = useState<CategoryColumn>();
 
   const router = useRouter();
   const params = useParams();
@@ -44,7 +44,7 @@ const CategoriesTable: React.FC<CategoriesTableProps> = ({
     });
   };
 
-  const onRemove = (category: Category) => {
+  const onRemove = (category: CategoryColumn) => {
     setAlertOpen(true);
     setCategoryToDelete(category);
   };
@@ -59,7 +59,7 @@ const CategoriesTable: React.FC<CategoriesTableProps> = ({
       setLoading(true);
 
       await axios.delete(
-        `/api/stores/${params.storeId}/categories/${categoryToDelete?.id}`
+        `/api/${params.storeId}/categories/${categoryToDelete?.id}`
       );
 
       toast.success("Category has been successfully deleted.");
@@ -75,6 +75,13 @@ const CategoriesTable: React.FC<CategoriesTableProps> = ({
       }, DIALOG_ANIMATION_MS + 100);
     }
   };
+
+  useListener(
+    "openCategoryDeleteAlert",
+    (category: CategoryColumn | undefined) => {
+      onRemove(category as CategoryColumn);
+    }
+  );
 
   return (
     <>
@@ -103,4 +110,4 @@ const CategoriesTable: React.FC<CategoriesTableProps> = ({
   );
 };
 
-export default CategoriesTable;
+export default CategoriesClient;
