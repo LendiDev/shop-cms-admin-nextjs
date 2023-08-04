@@ -6,6 +6,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge, BadgeProps } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
+import copy from "copy-to-clipboard";
 
 export interface ApiAlertProps {
   title: string;
@@ -29,18 +30,8 @@ export const ApiAlert: React.FC<ApiAlertProps> = ({
   access = "public",
 }) => {
   const onCopy = () => {
-    try {
-      // TODO: find better way to handle clipboard on all devices
-      const element = document.createElement("textarea");
-      element.value = description;
-      document.body.appendChild(element);
-      element.select();
-      document.execCommand("copy");
-      document.body.removeChild(element);
-      toast.success("API Endpoint copied to the clipboard");
-    } catch (error) {
-      toast.error("Something went wrong with copying to the clipboard");
-    }
+    copy(description, { debug: true });
+    toast.success("API Endpoint copied to the clipboard");
   };
 
   return (

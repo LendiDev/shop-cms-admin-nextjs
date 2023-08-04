@@ -1,8 +1,9 @@
 "use client";
 
-import { EditIcon, MoreVerticalIcon, Trash2Icon } from "lucide-react";
+import { Copy, EditIcon, MoreVerticalIcon, Trash2Icon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useBus } from "react-bus";
+import copy from "copy-to-clipboard";
 
 import {
   DropdownMenu,
@@ -12,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { CategoryColumn } from "./columns";
+import toast from "react-hot-toast";
 
 interface CategoryActionCellProps {
   data: CategoryColumn;
@@ -30,6 +32,11 @@ const CategoryActionCell: React.FC<CategoryActionCellProps> = ({ data }) => {
     bus.emit("openCategoryDeleteAlert", data);
   };
 
+  const onCopyToClipboard = () => {
+    copy(data.id);
+    toast.success("Category ID copied to the clipboard");
+  };
+
   return (
     <DropdownMenu>
       <div className="flex justify-center items-center">
@@ -38,6 +45,10 @@ const CategoryActionCell: React.FC<CategoryActionCellProps> = ({ data }) => {
         </DropdownMenuTrigger>
       </div>
       <DropdownMenuContent>
+        <DropdownMenuItem onClick={onCopyToClipboard}>
+          <Copy className="w-4 h-4 mr-2 " /> Copy ID
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem onClick={onUpdateHandler}>
           <EditIcon className="w-4 h-4 mr-2 " /> Edit
         </DropdownMenuItem>
