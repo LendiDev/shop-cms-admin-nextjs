@@ -117,7 +117,7 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
           className="flex flex-col space-y-2"
         >
           {initialLoading ? (
-            <Skeleton className="w-full h-[324px]" />
+            <Skeleton className="w-full h-[404px]" />
           ) : (
             <>
               <FormField
