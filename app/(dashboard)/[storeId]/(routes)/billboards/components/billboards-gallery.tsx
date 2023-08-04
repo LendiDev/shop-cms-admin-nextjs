@@ -57,7 +57,7 @@ const BillboardsGallery: React.FC<BillboardsGalleryProps> = ({
       setLoading(true);
 
       await axios.delete(
-        `/api/stores/${params.storeId}/billboards/${billboardToDelete?.id}`
+        `/api/${params.storeId}/billboards/${billboardToDelete?.id}`
       );
 
       toast.success("Billboard has been successfully deleted.");
