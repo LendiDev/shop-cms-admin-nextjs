@@ -1,4 +1,4 @@
-import { Billboard, Category } from "@prisma/client";
+import { Billboard, Category, Size } from "@prisma/client";
 import axios from "axios";
 
 const storeApi = axios.create({ baseURL: "/api" });
@@ -10,6 +10,15 @@ interface BillboardsResponse {
 interface CategoryResponse {
   category: Category;
 }
+
+export const fetchSize = async (storeId: string, sizeId: string) => {
+  const response = await storeApi.get<{
+    size: Size;
+  }>(`/${storeId}/sizes/${sizeId}`);
+  const { size } = response.data;
+
+  return size;
+};
 
 export const fetchCategory = async (storeId: string, categoryId: string) => {
   const response = await storeApi.get<CategoryResponse>(

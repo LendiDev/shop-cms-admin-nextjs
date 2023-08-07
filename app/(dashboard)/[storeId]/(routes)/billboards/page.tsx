@@ -5,6 +5,8 @@ import BillboardsGallery from "./components/billboards-gallery";
 import prismadb from "@/lib/prismadb";
 import ApiList from "@/components/ui/api-list";
 import BillboardModal from "./components/modals/billboard-modal";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 interface BillboardsPageProps {
   params: { storeId: string; billboardId: string };
@@ -32,8 +34,10 @@ const BillboardsPage: React.FC<BillboardsPageProps> = async ({ params }) => {
   return (
     <>
       <BillboardModal />
-      <BillboardsGallery billboards={billboards} />
-      <ApiList entityName="billboards" entityIdName="billboardId" />
+      <Suspense fallback={<Loading />}>
+        <BillboardsGallery billboards={billboards} />
+        <ApiList entityName="billboards" entityIdName="billboardId" />
+      </Suspense>
     </>
   );
 };
