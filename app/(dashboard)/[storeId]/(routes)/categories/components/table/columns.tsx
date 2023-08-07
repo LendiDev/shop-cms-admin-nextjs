@@ -1,6 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
 import CategoryActionCell from "./action-cell";
-import { TableHead } from "@/components/ui/table";
 
 export type CategoryColumn = {
   id: string;

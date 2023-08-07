@@ -104,7 +104,7 @@ const CategoriesClient: React.FC<CategoriesClientProps> = ({
           </Button>
         </div>
         <Separator />
-        <DataTable columns={columns} data={tableData} />
+        <DataTable columns={columns} data={tableData} searchBy="name" />
       </div>
     </>
   );
