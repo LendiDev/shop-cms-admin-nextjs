@@ -17,11 +17,12 @@ interface BillboardModalProps {}
 
 const BillboardModal: React.FC<BillboardModalProps> = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isNew, setIsNew] = useState(false);
 
   const router = useRouter();
   const params = useParams();
   const pathname = usePathname();
+
+  const isNew = pathname.includes("/billboards/new");
 
   const modalTitle = isNew ? "Create new billboard" : "Edit billboard";
   const modalDescription = isNew
@@ -29,14 +30,10 @@ const BillboardModal: React.FC<BillboardModalProps> = () => {
     : "Update your billboard";
 
   useEffect(() => {
-    if (pathname.includes("/billboards/new")) {
-      setIsOpen(true);
-      setIsNew(true);
-    }
-    if (pathname.includes(`/billboards/${params.billboardId}`)) {
+    if (pathname.includes("/billboards/")) {
       setIsOpen(true);
     }
-  }, [params.billboardId, pathname]);
+  }, [pathname]);
 
   const onClose = useCallback(() => {
     setIsOpen(false);

@@ -38,12 +38,6 @@ const CategoriesClient: React.FC<CategoriesClientProps> = ({
     router.push(`/${params.storeId}/categories/new`, { scroll: false });
   };
 
-  const onEdit = (categoryId: string) => {
-    router.push(`/${params.storeId}/categories/${categoryId}`, {
-      scroll: false,
-    });
-  };
-
   const onRemove = (category: CategoryColumn) => {
     setAlertOpen(true);
     setCategoryToDelete(category);

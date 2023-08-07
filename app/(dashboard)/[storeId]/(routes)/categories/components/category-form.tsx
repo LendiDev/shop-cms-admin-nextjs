@@ -162,6 +162,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ isNew, onCloseModal }) => {
                     <FormLabel>Category Name</FormLabel>
                     <FormControl>
                       <Input
+                        autoFocus={true}
                         autoComplete="off"
                         placeholder="Category..."
                         {...field}

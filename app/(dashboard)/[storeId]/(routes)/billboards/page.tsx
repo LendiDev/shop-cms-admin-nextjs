@@ -1,12 +1,11 @@
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
-import BillboardsGallery from "./components/billboards-gallery";
+import BillboardsGallery from "./components/billboards-client";
 import prismadb from "@/lib/prismadb";
 import ApiList from "@/components/ui/api-list";
 import BillboardModal from "./components/modals/billboard-modal";
 import { Suspense } from "react";
-import Loading from "./loading";
 
 interface BillboardsPageProps {
   params: { storeId: string; billboardId: string };
@@ -34,10 +33,8 @@ const BillboardsPage: React.FC<BillboardsPageProps> = async ({ params }) => {
   return (
     <>
       <BillboardModal />
-      <Suspense fallback={<Loading />}>
-        <BillboardsGallery billboards={billboards} />
-        <ApiList entityName="billboards" entityIdName="billboardId" />
-      </Suspense>
+      <BillboardsGallery billboards={billboards} />
+      <ApiList entityName="billboards" entityIdName="billboardId" />
     </>
   );
 };

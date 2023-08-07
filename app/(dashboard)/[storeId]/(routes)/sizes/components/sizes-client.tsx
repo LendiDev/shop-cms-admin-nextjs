@@ -29,7 +29,7 @@ const SizesClient: React.FC<SizesClientProps> = ({
 
   const [alertOpen, setAlertOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [sizeToDelete, setCategoryToDelete] = useState<SizeColumn>();
+  const [sizeToDelete, setSizeToDelete] = useState<SizeColumn>();
 
   const router = useRouter();
   const params = useParams();
@@ -38,15 +38,9 @@ const SizesClient: React.FC<SizesClientProps> = ({
     router.push(`/${params.storeId}/sizes/new`, { scroll: false });
   };
 
-  const onEdit = (sizeId: string) => {
-    router.push(`/${params.storeId}/sizes/${sizeId}`, {
-      scroll: false,
-    });
-  };
-
   const onRemove = (size: SizeColumn) => {
     setAlertOpen(true);
-    setCategoryToDelete(size);
+    setSizeToDelete(size);
   };
 
   const onRemoveHandler = async () => {
@@ -60,11 +54,11 @@ const SizesClient: React.FC<SizesClientProps> = ({
 
       await axios.delete(`/api/${params.storeId}/sizes/${sizeToDelete?.id}`);
 
-      toast.success("Category has been successfully deleted.");
+      toast.success("Size has been successfully deleted.");
       router.refresh();
       setAlertOpen(false);
     } catch (error) {
-      toast.error("Category is not deleted");
+      toast.error("Size is not deleted");
       setLoading(false);
     } finally {
       setAlertOpen(false);

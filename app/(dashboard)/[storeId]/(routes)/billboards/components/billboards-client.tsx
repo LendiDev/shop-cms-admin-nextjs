@@ -10,17 +10,16 @@ import { Button } from "@/components/ui/button";
 import Heading from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Billboard } from "@prisma/client";
-import BillboardModal from "./modals/billboard-modal";
 import Image from "next/image";
 import AlertModal from "@/components/modals/alert-modal";
 
 import { DIALOG_ANIMATION_MS } from "@/components/ui/dialog";
 
-interface BillboardsGalleryProps {
+interface BillboardsClientProps {
   billboards: Billboard[];
 }
 
-const BillboardsGallery: React.FC<BillboardsGalleryProps> = ({
+const BillboardsClient: React.FC<BillboardsClientProps> = ({
   billboards = [],
 }) => {
   const billboardsCount = billboards.length > 0 ? `(${billboards.length})` : "";
@@ -157,4 +156,4 @@ const BillboardsGallery: React.FC<BillboardsGalleryProps> = ({
   );
 };
 
-export default BillboardsGallery;
+export default BillboardsClient;

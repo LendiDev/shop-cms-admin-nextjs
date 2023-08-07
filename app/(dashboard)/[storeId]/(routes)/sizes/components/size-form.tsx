@@ -74,6 +74,7 @@ const SizesForm: React.FC<SizesFormProps> = ({ isNew, onCloseModal }) => {
         .then((size) => {
           if (isSubscribed) {
             form.setValue("name", size.name);
+            form.setValue("value", String(size.value));
           }
         })
         .catch(() => {

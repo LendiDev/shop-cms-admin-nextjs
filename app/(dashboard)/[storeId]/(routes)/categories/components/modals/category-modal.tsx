@@ -17,11 +17,12 @@ interface BillboardModalProps {}
 
 const CategoryModal: React.FC<BillboardModalProps> = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isNew, setIsNew] = useState(false);
 
   const router = useRouter();
   const params = useParams();
   const pathname = usePathname();
+
+  const isNew = pathname.includes("/categories/new");
 
   const modalTitle = isNew ? "Create new category" : "Edit a category";
   const modalDescription = isNew
@@ -29,14 +30,10 @@ const CategoryModal: React.FC<BillboardModalProps> = () => {
     : "Update a category";
 
   useEffect(() => {
-    if (pathname.includes("/categories/new")) {
-      setIsOpen(true);
-      setIsNew(true);
-    }
-    if (pathname.includes(`/categories/${params.categoryId}`)) {
+    if (pathname.includes("/categories/")) {
       setIsOpen(true);
     }
-  }, [params.categoryId, pathname]);
+  }, [pathname]);
 
   const onClose = useCallback(() => {
     setIsOpen(false);
