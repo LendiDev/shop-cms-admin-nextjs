@@ -51,13 +51,6 @@ export async function PATCH(
       );
     }
 
-    if (!billboardId) {
-      return NextResponse.json(
-        { message: "Billboard id is required" },
-        { status: 400 }
-      );
-    }
-
     if (!params.storeId) {
       return NextResponse.json(
         { message: "Store id is required" },

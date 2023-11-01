@@ -40,11 +40,11 @@ const CategoriesPage: React.FC<CategoriesPageProps> = async ({ params }) => {
   });
 
   const formattedCategories: CategoryColumn[] = categories.map(
-    ({ id, name, createdAt, billboard: { label } }) => {
+    ({ id, name, createdAt, billboard }) => {
       return {
         id,
         name,
-        billboard: label,
+        billboard: billboard?.label || "Not selected",
         createdAt: format(createdAt, "dd/MM/yy h:mmaaa"),
       };
     }

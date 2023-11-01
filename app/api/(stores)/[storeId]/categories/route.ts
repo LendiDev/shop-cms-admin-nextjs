@@ -51,13 +51,6 @@ export async function POST(
       );
     }
 
-    if (!billboardId) {
-      return NextResponse.json(
-        { message: "billboardId property is required" },
-        { status: 400 }
-      );
-    }
-
     if (!params.storeId) {
       return NextResponse.json(
         { message: "storeId is required" },

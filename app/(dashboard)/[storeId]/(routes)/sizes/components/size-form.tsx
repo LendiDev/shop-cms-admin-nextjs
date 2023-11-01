@@ -32,7 +32,7 @@ interface SizesParams extends Params {
 
 const formSchema = z.object({
   name: z.string().min(1),
-  value: z.string().min(1),
+  value: z.coerce.number().min(0.1),
 });
 
 interface SizesFormProps {
@@ -53,7 +53,7 @@ const SizesForm: React.FC<SizesFormProps> = ({ isNew, onCloseModal }) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      value: undefined,
+      value: 0,
     },
   });
 
@@ -74,7 +74,7 @@ const SizesForm: React.FC<SizesFormProps> = ({ isNew, onCloseModal }) => {
         .then((size) => {
           if (isSubscribed) {
             form.setValue("name", size.name);
-            form.setValue("value", String(size.value));
+            form.setValue("value", size.value);
           }
         })
         .catch(() => {

@@ -41,7 +41,7 @@ interface CategoryParams extends Params {
 
 const formSchema = z.object({
   name: z.string().min(1),
-  billboardId: z.string().uuid().optional(),
+  billboardId: z.string().optional(),
 });
 
 interface CategoryFormProps {
@@ -78,16 +78,16 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ isNew, onCloseModal }) => {
       const fetchData = async () => {
         return Promise.all([
           await fetchCategory(params.storeId, params.categoryId),
-          await fetchBillboards(params.storeId as string),
+          await fetchBillboards(params.storeId),
         ]);
       };
 
       fetchData()
         .then(([category, billboards]) => {
           if (isSubscribed) {
+            setBillboards(billboards);
             form.setValue("name", category.name);
             form.setValue("billboardId", category.billboardId);
-            setBillboards(billboards);
           }
         })
         .catch(() => {
@@ -98,7 +98,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ isNew, onCloseModal }) => {
           setInitialLoading(false);
         });
     } else {
-      fetchBillboards(params.storeId as string)
+      fetchBillboards(params.storeId)
         .then((billboards) => {
           if (isSubscribed) {
             setBillboards(billboards);
@@ -143,6 +143,10 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ isNew, onCloseModal }) => {
     }
   };
 
+  const onNewBillboard = () => {
+    router.push(`/${params.storeId}/billboards/new`, { scroll: false });
+  };
+
   return (
     <>
       <Form {...form}>
@@ -178,10 +182,11 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ isNew, onCloseModal }) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Billboard</FormLabel>
-                    <FormDescription className="text-xs" style={{ margin: 0 }}>
+                    <FormDescription className="text-xs m-0">
                       optional
                     </FormDescription>
                     <Select
+                      required={false}
                       defaultValue={field.value}
                       onValueChange={field.onChange}
                     >
@@ -191,6 +196,14 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ isNew, onCloseModal }) => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
+                        {billboards.length === 0 && (
+                          <div className="flex justify-center items-center gap-2">
+                            <p className="p-2 text-center">No billboards yet</p>
+                            <Button onClick={onNewBillboard} size="sm">
+                              Create new
+                            </Button>
+                          </div>
+                        )}
                         {billboards.map(({ id, label }) => {
                           return (
                             <SelectItem key={id} value={id}>
