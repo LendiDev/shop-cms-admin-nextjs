@@ -87,7 +87,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ isNew, onCloseModal }) => {
           if (isSubscribed) {
             setBillboards(billboards);
             form.setValue("name", category.name);
-            form.setValue("billboardId", category.billboardId);
+            form.setValue("billboardId", category.billboardId || undefined);
           }
         })
         .catch(() => {
