@@ -102,7 +102,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
         setOpen={setOpenAlert}
         onConfirmAction={onDeleteConfirm}
         actionButtonText="Confirm"
-        description={`The store "${initialData.name}" will be deleted permanently. This action cannot be undone.`}
+        description={`The store "${initialData.name}" will be deleted permanently. Make sure to delete all categories and billboards. This action cannot be undone.`}
       />
       <div className="flex justify-between items-center">
         <Heading title="Settings" subtitle="Manage store preferences" />

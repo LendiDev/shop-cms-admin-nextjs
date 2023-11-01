@@ -5,7 +5,6 @@ import BillboardsGallery from "./components/billboards-client";
 import prismadb from "@/lib/prismadb";
 import ApiList from "@/components/ui/api-list";
 import BillboardModal from "./components/modals/billboard-modal";
-import { Suspense } from "react";
 
 interface BillboardsPageProps {
   params: { storeId: string; billboardId: string };

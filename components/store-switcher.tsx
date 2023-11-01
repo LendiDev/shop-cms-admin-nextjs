@@ -61,11 +61,6 @@ export function StoreSwitcher({ className, items = [] }: StoreSwitcherProps) {
   const onSelectStore = (store: { value: string; label: string }) => {
     setOpen(false);
     router.push(`/${store.value}/${getRestPathName()}`);
-
-    // BUG: There is a bug with cache on push to a new page
-    // the list of stores is not displaying new stores on selecting previously created
-    // This is a workaround ATM: https://github.com/vercel/next.js/issues/42991#issuecomment-1397198637
-    router.refresh();
   };
 
   const onCreateStore = () => {

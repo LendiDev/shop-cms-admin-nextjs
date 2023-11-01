@@ -50,7 +50,7 @@ export const StoreModal = () => {
     try {
       setIsLoading(true);
 
-      const response = await axios.post<Store>("/api/stores", values);
+      const response = await axios.post<Store>("/api", values);
 
       if (isRoot) {
         window.location.assign(`/${response.data.id}`);
@@ -60,11 +60,11 @@ export const StoreModal = () => {
         router.replace(`/${response.data.id}`);
         router.refresh();
       }
-      resetFormWithDelay();
     } catch (error) {
       // TODO: custom errors based on error
       toast.error("Something went wrong...");
       setIsLoading(false);
+      resetFormWithDelay();
     } finally {
       setTimeout(() => {
         setIsLoading(false);
